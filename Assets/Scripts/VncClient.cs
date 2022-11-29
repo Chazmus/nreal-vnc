@@ -13,6 +13,8 @@ public class VncClient
     private RfbProtocol rfb;
     private bool viewOnlyMode;
     private byte securityType;
+    private Framebuffer _framebuffer;
+    private EncodedRectangleFactory factory;
 
     /// <summary>
     /// Connect to a VNC Host and determine which type of Authentication it uses. If the host uses Password Authentication, a call to Authenticate() will be required. Default Display and Port numbers are used.
@@ -239,4 +241,26 @@ public class VncClient
 
         return response;
     }
+    /// <summary>
+    /// Finish setting-up protocol with VNC Host.  Should be called after Connect and Authenticate (if password required).
+    /// </summary>
+    public void Initialize(int bitsPerPixel, int depth)
+    {
+        // Finish initializing protocol with host
+        rfb.WriteClientInitialisation(true);  // Allow the desktop to be shared
+        _framebuffer = rfb.ReadServerInit(bitsPerPixel, depth);
+
+        rfb.WriteSetEncodings(new uint[] {	RfbProtocol.ZRLE_ENCODING,
+            RfbProtocol.HEXTILE_ENCODING,
+            //	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
+            RfbProtocol.RRE_ENCODING,
+            RfbProtocol.COPYRECT_ENCODING,
+            RfbProtocol.RAW_ENCODING });
+
+        rfb.WriteSetPixelFormat(_framebuffer);	// set the required framebuffer format
+
+        // Create an EncodedRectangleFactory so that EncodedRectangles can be built according to set pixel layout
+        factory = new EncodedRectangleFactory(rfb, _framebuffer);
+    }
+
 }
