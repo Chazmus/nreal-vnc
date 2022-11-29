@@ -10,7 +10,7 @@
       </intent-filter>
     </activity>
     <meta-data android:name="nreal_sdk" android:value="true" />
-    <meta-data android:name="com.nreal.supportDevices" android:value="NrealLight|NrealAir" />
+    <meta-data android:name="com.nreal.supportDevices" android:value="NrealAir" />
   </application>
   <uses-permission android:name="android.permission.BLUETOOTH" />
 </manifest>
