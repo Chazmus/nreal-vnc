@@ -129,6 +129,7 @@ public class RfbProtocol
 	/// </summary>
 	public float ServerVersion
 	{
+		// TODO this should probably not be a float
 		get { return verMajor + verMinor * 0.1f; }
 	}
 

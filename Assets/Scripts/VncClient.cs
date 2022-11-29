@@ -116,23 +116,7 @@ public class VncClient
 
             // If new Security Types are supported in future, add the code here.  For now, only
             // VNC Authentication is supported.
-            if (securityType == 2)
-            {
-                // TODO: password input
-                Authenticate("password");
-            }
-            else
-            {
-                throw new NotSupportedException("Unable to Authenticate with Server. The Server uses an Authentication scheme unknown to the client.");
-            }
-
-            if (rfb.ReadSecurityResult() > 0)
-            {
-                // For some reason, the server is not accepting the connection.  Get the
-                // reason and throw an exception
-                throw new VncProtocolException("Unable to Connecto to the Server. The Server rejected the connection for the following reason: " +
-                                               rfb.ReadSecurityFailureReason());
-            }
+            return Authenticate("password");
         }
         catch (Exception e)
         {
@@ -175,29 +159,35 @@ public class VncClient
     /// <returns>Returns True if Authentication worked, otherwise False.</returns>
     public bool Authenticate(string password)
     {
-        if (password == null) throw new ArgumentNullException(nameof(password));
-
         // If new Security Types are supported in future, add the code here.  For now, only
         // VNC Authentication is supported.
         if (securityType == 2)
         {
             PerformVncAuthentication(password);
         }
-        else
+        else if (securityType == 1)
+        {
+            Debug.Log("No security enabled, no need to authenticate");
+        }
+        else if (securityType != 1)
         {
             throw new NotSupportedException("Unable to Authenticate with Server. The Server uses an Authentication scheme unknown to the client.");
         }
 
         if (rfb.ReadSecurityResult() == 0)
         {
+            Debug.Log("Successfully authenticated");
             return true;
         }
 
         // Authentication failed, and if the server is using Protocol version 3.8, a
-        // plain text message follows indicating why the error happend.  I'm not
-        // currently using this message, but it is read here to clean out the stream.
+        // plain text message follows indicating why the error happend.
         // In earlier versions of the protocol, the server will just drop the connection.
-        if (rfb.ServerVersion == 3.8) rfb.ReadSecurityFailureReason();
+        if (Math.Abs(rfb.ServerVersion - 3.8) < 0.05)
+        {
+            Debug.Log(rfb.ReadSecurityFailureReason());
+        }
+
         rfb.Close(); // TODO: Is this the right place for this???
         return false;
     }
