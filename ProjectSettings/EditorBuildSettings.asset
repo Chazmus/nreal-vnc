@@ -5,22 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: Assets/NRSDK/Demos/HelloMR-3dof.unity
-    guid: 1930205874b70904a994853afcaa90af
-  - enabled: 0
-    path: Assets/NRSDK/Demos/HelloMR.unity
-    guid: dd74f1c9685ef48499229d4957b58000
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
-    guid: c87ed9eed520009ed8ec17be121b0dce
-  - enabled: 0
-    path: Assets/Scenes/VNCWithoutNrealTestScene.unity
-    guid: ed312be51c3dda3638d878559d2ca67d
-  - enabled: 0
-    path: Assets/Scenes/EmptyScene.unity
-    guid: d7f0416485dac204fa9d1d7134ca50b6
+    guid: 7ab2d9726a27bc53b9032709079772c1
   m_configObjects: {}
