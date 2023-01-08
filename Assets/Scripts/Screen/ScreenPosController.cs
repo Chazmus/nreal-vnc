@@ -1,12 +1,12 @@
-using NRKernal;
+using InputManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 namespace Screen
 {
     [RequireComponent(typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer))]
-    public class ScreenPosController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IPointerDownHandler,
-        IPointerUpHandler
+    public class ScreenPosController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
@@ -20,6 +20,13 @@ namespace Screen
         private Transform _parent;
         private bool _isDragging;
         private Quaternion _previousControllerRotation;
+        private NrealcontrollerInput _nrealcontrollerInput;
+
+        [Inject]
+        public void Construct(NrealcontrollerInput nrealcontrollerInput)
+        {
+            _nrealcontrollerInput = nrealcontrollerInput;
+        }
 
         private void Awake()
         {
@@ -33,17 +40,26 @@ namespace Screen
         {
             if (_isDragging)
             {
-                var currentControllerRotation = NRInput.GetRotation();
-
+                // Move screen around according to how the controller is moved
+                var currentControllerRotation = _nrealcontrollerInput.Rotation;
                 var angleBetween = Quaternion.Angle(currentControllerRotation, _previousControllerRotation);
                 var axisBetween = GetRotationAxis(_previousControllerRotation, currentControllerRotation);
+                _parent.RotateAround(_nrealcontrollerInput.Position, axisBetween, angleBetween);
+                var currentControllerPosition = _nrealcontrollerInput.Position;
 
-                _parent.RotateAround(NRInput.GetPosition(), axisBetween, angleBetween);
+                // Adjust rotation so that the screen is always facing the camera exactly
+                _parent.rotation.SetLookRotation(_parent.position - currentControllerPosition);
 
-
-
-
+                // Update previous rotation value with current
                 _previousControllerRotation = currentControllerRotation;
+
+                // Update position and scale using the delta touch (touchpad drag)
+                var deltaTouch = _nrealcontrollerInput.DeltaTouch;
+                var scale = deltaTouch.x;
+                var distance = deltaTouch.y;
+                _parent.localScale *= (1 + scale);
+                _parent.Translate(new Vector3(0,0,distance), _nrealcontrollerInput.CameraCenter);
+
             }
         }
 
@@ -68,33 +84,19 @@ namespace Screen
         public void OnPointerDown(PointerEventData eventData)
         {
             _isDragging = true;
-            Debug.Log("Now dragging");
-            _previousControllerRotation = NRInput.GetRotation();
+            _meshRenderer.material = _selectedMaterial;
+            _previousControllerRotation = _nrealcontrollerInput.Rotation;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             _isDragging = false;
+            _meshRenderer.material = _defaultMaterial;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             _meshRenderer.enabled = false;
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            // var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, _screenPoint.z);
-            // var curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + _offset;
-            // _parent.position = curPosition;
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            // _meshRenderer.material = _selectedMaterial;
-            // var parentPosition = _parent.position;
-            // _screenPoint = Camera.main.WorldToScreenPoint(parentPosition);
-            // _offset = parentPosition - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _screenPoint.z));
         }
     }
 }
