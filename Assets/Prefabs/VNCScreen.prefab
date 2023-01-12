@@ -284,6 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6228263141471041431}
+  - component: {fileID: 138755190888652844}
   m_Layer: 0
   m_Name: VNCScreen
   m_TagString: Untagged
@@ -298,8 +299,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6228263141471041428}
-  m_LocalRotation: {x: 0.020591242, y: -0.03251161, z: 0.0006699509, w: 0.999259}
-  m_LocalPosition: {x: 0, y: 0.989, z: 4.41}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -308,7 +309,20 @@ Transform:
   - {fileID: 1409837439}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 2.361, y: -3.727, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &138755190888652844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6228263141471041428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7d1e093b3384fe2bdfaae9e329e2091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screen: {fileID: 6228263141720709354}
 --- !u!1 &6228263141628134804
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,7 +553,7 @@ MonoBehaviour:
   password: password123
   disconnectedScreen: {fileID: 2100000, guid: b1571023300a75241b9e8c2971e40bfb, type: 2}
   connectedMaterial: {fileID: 2100000, guid: 26485b1ce0a9d794c885a887aeb3da4f, type: 2}
-  connectOnStartUp: 1
+  connectOnStartUp: 0
   state: 0
 --- !u!1 &6228263141896877148
 GameObject:

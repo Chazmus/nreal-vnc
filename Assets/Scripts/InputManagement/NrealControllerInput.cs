@@ -22,5 +22,17 @@ namespace InputManagement
         public Vector2 Touch { get; private set; }
         public Vector2 DeltaTouch { get; private set; }
 
+        public bool GetButton(ControllerButton button)
+        {
+            return NRInput.GetButton(button);
+        }
+        public bool GetButtonDown(ControllerButton button)
+        {
+            return NRInput.GetButtonDown(button);
+        }
+        public bool GetButtonUp(ControllerButton button)
+        {
+            return NRInput.GetButtonUp(button);
+        }
     }
 }

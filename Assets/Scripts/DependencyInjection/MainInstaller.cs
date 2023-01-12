@@ -12,7 +12,8 @@ namespace DependencyInjection
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<NrealcontrollerInput>().AsSingle();
-            Container.BindFactory<Object, FloatingScreen, FloatingScreen.Factory>().FromFactory<PrefabFactory<FloatingScreen>>();
+            Container.BindFactory<VncScreenController.CreationParameters, VncScreenController, VncScreenController.Factory>()
+                .FromComponentInNewPrefab(FloatingScreenPrefab).AsTransient();
         }
     }
 }
