@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -11,10 +10,22 @@ namespace Screen
         [SerializeField] public VNCScreen.VNCScreen _screen;
         private CreationParameters _creationParameters;
 
+        private bool isActiveScreen = true;
+
         [Inject]
         public void Construct(CreationParameters creationParameters)
         {
             _creationParameters = creationParameters;
+        }
+
+        private void Update()
+        {
+            if (isActiveScreen)
+            {
+                Event currentEvent = Event.current;
+                // _screen.OnKey();
+
+            }
         }
 
         private void Awake()
