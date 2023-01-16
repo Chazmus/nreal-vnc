@@ -1,4 +1,5 @@
 using System.Collections;
+using InputManagement;
 using UnityEngine;
 using Zenject;
 
@@ -11,11 +12,13 @@ namespace Screen
         private CreationParameters _creationParameters;
 
         private bool isActiveScreen = true;
+        private KeyboardAndMouseInput _keyboardAndMouseInput;
 
         [Inject]
-        public void Construct(CreationParameters creationParameters)
+        public void Construct(CreationParameters creationParameters, KeyboardAndMouseInput keyboardAndMouseInput)
         {
             _creationParameters = creationParameters;
+            _keyboardAndMouseInput = keyboardAndMouseInput;
         }
 
         private void Update()
@@ -34,6 +37,19 @@ namespace Screen
             _screen.port = _creationParameters.Port;
             _screen.display = _creationParameters.DisplayNumber;
             _screen.password = _creationParameters.Password;
+
+            _keyboardAndMouseInput.OnKeyboardEvent += handleKeyboardEvent;
+            // TODO - mice
+            // _keyboardAndMouseInput.onMouseClicked += handleMouseClickEvent;
+            // _keyboardAndMouseInput.onMouseMoved += handleMouseMoveEvent;
+        }
+
+        private void handleKeyboardEvent(uint keysym, bool pressed)
+        {
+            if (isActiveScreen)
+            {
+                _screen.PressKey(keysym, pressed);
+            }
         }
 
         private void Start()

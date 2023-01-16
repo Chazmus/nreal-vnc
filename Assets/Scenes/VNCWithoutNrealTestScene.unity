@@ -358,7 +358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: host
-      value: 100.72.222.8
+      value: pi
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: display
@@ -366,7 +366,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: password
-      value: password123
+      value: Ninjaturtle1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
+      propertyPath: connectOnStartUp
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}

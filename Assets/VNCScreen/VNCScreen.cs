@@ -44,12 +44,12 @@ namespace VNCScreen
 
 
     /// <summary>
-    /// The Main Component. 
+    /// The Main Component.
     /// It must be placed on a Quad Mesh with a MeshCollider
     /// The password, host, port and display must be configured in the editor fields
-    /// 
+    ///
     /// To control the screen, use a VNCMouseRaycaster for instance.
-    /// 
+    ///
     /// This code is mainly adapted from RemoteDesktop code from the VncSharp
     /// </summary>
     public class VNCScreen : MonoBehaviour
@@ -265,7 +265,7 @@ namespace VNCScreen
         protected void OnConnectionLost(object sender, EventArgs e)
         {
             // If the remote host dies, and there are attempts to write
-            // keyboard/mouse/update notifications, this may get called 
+            // keyboard/mouse/update notifications, this may get called
             // many times, and from main or worker thread.
             // Guard against this and invoke Disconnect once.
             if (state == RuntimeState.Connected)
@@ -286,7 +286,7 @@ namespace VNCScreen
                 }
                 else if (!string.IsNullOrEmpty(error.Reason))
                 {
-                    Debug.Log("[VNCScreen]" + error.Reason); 
+                    Debug.Log("[VNCScreen]" + error.Reason);
                 }
             }
             else
@@ -353,10 +353,10 @@ namespace VNCScreen
         /// <summary>
         /// After protocol-level initialization and connecting is complete, the local GUI objects have to be set-up, and requests for updates to the remote host begun.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">Thrown if the RemoteDesktop control is already in the Connected state.  See <see cref="VncSharp.RemoteDesktop.IsConnected" />.</exception>		
+        /// <exception cref="System.InvalidOperationException">Thrown if the RemoteDesktop control is already in the Connected state.  See <see cref="VncSharp.RemoteDesktop.IsConnected" />.</exception>
         protected bool Initialize()
         {
-            // Finish protocol handshake with host now that authentication is done.  
+            // Finish protocol handshake with host now that authentication is done.
             vnc.Initialize();
             SetState(RuntimeState.WaitFirstBuffer);
 
@@ -377,7 +377,7 @@ namespace VNCScreen
             // Refresh scroll properties
             //AutoScrollMinSize = desktopPolicy.AutoScrollMinSize;
 
-            // Start getting updates from the remote host (vnc.StartUpdates will begin a worker thread).          
+            // Start getting updates from the remote host (vnc.StartUpdates will begin a worker thread).
             vnc.StartUpdates();
 
             return true;
@@ -479,7 +479,7 @@ namespace VNCScreen
             if (state != RuntimeState.Connected) return;
 
             // For all of these I am sending the key presses manually instead of calling
-            // the keyboard event handlers, as I don't want to propegate the calls up to the 
+            // the keyboard event handlers, as I don't want to propegate the calls up to the
             // base control class and form.
             switch (keys)
             {
@@ -534,8 +534,13 @@ namespace VNCScreen
 
         public void OnKey(KeyCode key, bool pressed)
         {
-            uint code = KeyTranslator.convertToXKCode(key);
-            PressKey(code, pressed, !pressed);
+            // uint code = KeyTranslator.convertToXKCode(key);
+            // PressKey(code, pressed, !pressed);
+        }
+
+        public void PressKey(uint keysym, bool pressed)
+        {
+            vnc.WriteKeyboardEvent(keysym, pressed);
         }
     }
 }
