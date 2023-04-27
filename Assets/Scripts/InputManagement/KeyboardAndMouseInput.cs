@@ -20,21 +20,21 @@ namespace InputManagement
         public void Tick()
         {
             // check for all key presses
-            foreach (var keyCode in KeyTranslator.KeyDict.Keys)
-            {
-                if (Input.GetKeyDown(keyCode))
-                {
-                    // perform action for key down
-                    Debug.Log("Key down: " + keyCode);
-                    OnKeyboardEvent(KeyTranslator.KeyDict[keyCode], true);
-                }
-                else if (Input.GetKeyUp(keyCode))
-                {
-                    // perform action for key up
-                    Debug.Log("Key up: " + keyCode);
-                    OnKeyboardEvent(KeyTranslator.KeyDict[keyCode], false);
-                }
-            }
+            // foreach (var keyCode in KeyTranslator.KeyDict.Keys)
+            // {
+            //     if (Input.GetKeyDown(keyCode))
+            //     {
+            //         // perform action for key down
+            //         Debug.Log("Key down: " + keyCode);
+            //         OnKeyboardEvent(KeyTranslator.KeyDict[keyCode], true);
+            //     }
+            //     else if (Input.GetKeyUp(keyCode))
+            //     {
+            //         // perform action for key up
+            //         Debug.Log("Key up: " + keyCode);
+            //         OnKeyboardEvent(KeyTranslator.KeyDict[keyCode], false);
+            //     }
+            // }
 
             // check for all mouse button presses
             for (var i = 0; i < 3; i++)

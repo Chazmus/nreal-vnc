@@ -74,24 +74,19 @@ namespace VNCScreen
 
         Thread mainThread;
 
-        private void Start()
+        // Use this for initialization
+        void Start()
         {
-            mainThread = Thread.CurrentThread;
+            mainThread = System.Threading.Thread.CurrentThread;
 
-            SetDisconnectedMaterial();
+            setDisconnectedMaterial();
             if (connectOnStartUp)
             {
                 Connect();
             }
-            if (viewOnly)
-            {
-                var raycaster = FindObjectOfType<VNCMouseRaycaster>();
-                if (raycaster != null)
-                    Destroy(raycaster.gameObject);
-            }
         }
 
-        private void SetDisconnectedMaterial()
+        void setDisconnectedMaterial()
         {
             if (disconnectedScreen != null)
             {
@@ -99,8 +94,7 @@ namespace VNCScreen
             }
         }
 
-        /// The Client object handling all protocol-level interaction
-        VNCSharpClient vnc;
+        IVncClient vnc;                           // The Client object handling all protocol-level interaction
 
         public enum RuntimeState
         {
@@ -113,26 +107,26 @@ namespace VNCScreen
             Error
         }
 
-        /*public enum VNCPlugin
+        public enum VNCPlugin
         {
             VNCSharp,
             RealVnc
         }
 
-        public VNCPlugin plugin;*/
+        public VNCPlugin plugin;
 
-        VNCSharpClient AddVNCClient()
+        IVncClient buildVNC()
         {
-            /*switch (plugin)
+            switch (plugin)
             {
                 default:
-                case VNCPlugin.VNCSharp:*/
-                    return new VNCSharpClient();/*
+                case VNCPlugin.VNCSharp:
+                    return new VNCSharpClient();
                 case VNCPlugin.RealVnc:
                     {
                         return gameObject.AddComponent<RealVncClient>();
                     }
-            }*/
+            }
         }
 
         public RuntimeState state = RuntimeState.Disconnected;
@@ -173,7 +167,7 @@ namespace VNCScreen
             }
 
             // Start protocol-level handling and determine whether a password is needed
-            vnc = AddVNCClient();
+            vnc = buildVNC();
             vnc.ConnectionLost += new EventHandler(OnConnectionLost);
             vnc.onConnection += Vnc_onConnection;
             connectionReceived = false;
@@ -188,7 +182,6 @@ namespace VNCScreen
 
             if (needPassword)
             {
-                passwordPending = true;
                 // Server needs a password, so call which ever method is refered to by the GetPassword delegate.
                 if (string.IsNullOrEmpty(password))
                 {
@@ -306,24 +299,25 @@ namespace VNCScreen
                 return;
             }
 
+
             switch (newState)
             {
                 case RuntimeState.Disconnected:
-                    SetDisconnectedMaterial();
+                    setDisconnectedMaterial();
                     break;
                 case RuntimeState.Disconnecting:
-                    SetDisconnectedMaterial();
+                    setDisconnectedMaterial();
                     break;
                 case RuntimeState.Connected:
                     break;
                 case RuntimeState.WaitFirstBuffer:
-                    SetDisconnectedMaterial();
+                    setDisconnectedMaterial();
                     break;
                 case RuntimeState.Connecting:
-                    SetDisconnectedMaterial();
+                    setDisconnectedMaterial();
                     break;
                 case RuntimeState.Error:
-                    SetDisconnectedMaterial();
+                    setDisconnectedMaterial();
                     break;
                 default:
                     break;
@@ -392,38 +386,26 @@ namespace VNCScreen
             OnConnectionLost("Disconnected");
         }
 
-        private float timeSinceLastFullRefresh = 0f;
-        private bool firstFrame = true;
 
         // Update is called once per frame
-        private void FixedUpdate()
+        void Update()
         {
             if (IsConnected)
             {
-                if (firstFrame)
-                {
-                    firstFrame = false;
-                    GetComponent<Renderer>().sharedMaterial.mainTexture = vnc.getTexture();
-                }
+                GetComponent<Renderer>().sharedMaterial.mainTexture = vnc.getTexture();
 
-                bool didUpdate = vnc.updateDesktopImage();
-                if (didUpdate)
+                if (vnc.updateDesktopImage())
                 {
                     if (state == RuntimeState.WaitFirstBuffer)
-                            SetState(RuntimeState.Connected);
+                        SetState(RuntimeState.Connected);
                 }
+
                 if (state == RuntimeState.Connected)
                 {
                     vnc.RequestScreenUpdate(fullScreenRefresh);
+
                     // Make sure the next screen update is incremental
                     fullScreenRefresh = false;
-                    if (timeSinceLastFullRefresh < 1f)
-                        timeSinceLastFullRefresh += Time.deltaTime;
-                    else
-                    {
-                        timeSinceLastFullRefresh = 0f;
-                        fullScreenRefresh = true;
-                    }
                 }
 
             }
@@ -436,7 +418,7 @@ namespace VNCScreen
             stateChanges.Clear();
         }
 
-        private void OnApplicationQuit()
+        void OnApplicationQuit()
         {
             if (IsConnected)
                 Disconnect();
@@ -534,8 +516,8 @@ namespace VNCScreen
 
         public void OnKey(KeyCode key, bool pressed)
         {
-            // uint code = KeyTranslator.convertToXKCode(key);
-            // PressKey(code, pressed, !pressed);
+            uint code = KeyTranslator.convertToXKCode(key);
+            PressKey(code, pressed, !pressed);
         }
 
         public void PressKey(uint keysym, bool pressed)

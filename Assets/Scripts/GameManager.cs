@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
         // TODO if unity editor disabled for now for testing purposes
 // #if UNITY_EDITOR
         // Create a screen for debugging if running in the editor
-        factory.Create(new VncScreenController.CreationParameters("123.123.123.123", 5900, 1, "password123"));
+        factory.Create(new VncScreenController.CreationParameters("localhost", 5900, 0, ""));
 // #endif
     }
 }

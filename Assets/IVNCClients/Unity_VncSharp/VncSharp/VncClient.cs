@@ -37,14 +37,14 @@ using UnityEngine;
 namespace UnityVncSharp
 {
 
-    public class VNCSharpClient// : IVncClient
+    public class VNCSharpClient : IVncClient
     {
         RfbProtocol rfb;            // The protocol object handling all communication with server.
         FrameBufferInfos bufferInfos;         // The geometry and properties of the remote framebuffer
         byte securityType;          // The type of Security agreed upon by client/server
         EncodedRectangleFactory factory;
 
-        Bitmap theBitmap;
+        Bitmap theBitmap;                          // Internal representation of remote image.
 
         List<IDesktopUpdater> updates = new List<IDesktopUpdater>();
 
@@ -76,7 +76,7 @@ namespace UnityVncSharp
         int received = 0;
 
         public bool updateDesktopImage()
-        {
+        {      
             for (int i = 0; i < updates.Count; i++)
             {
                 received++;
@@ -84,6 +84,8 @@ namespace UnityVncSharp
                 if (u != null)
                     u.Draw(theBitmap);
             }
+
+       //     UnityEngine.Debug.Log("received " + received);
 
             updates.Clear();
             return received >= 1;
@@ -466,11 +468,10 @@ namespace UnityVncSharp
             Thread.Sleep(1000);
 
             int rectangles;
-            int enc = 16;
+            int enc;
 
             // Get the initial destkop from the host
             RequestScreenUpdate(true);
-            List<IDesktopUpdater> encodedRectangles = new List<IDesktopUpdater>(100);
 
             while (true)
             {
@@ -486,32 +487,26 @@ namespace UnityVncSharp
 
                             if (CheckIfThreadDone())
                                 break;
-                            encodedRectangles.Clear();
 
-                            Rectangle combinedRectangle = new Rectangle(0, 0, (ushort)BufferInfos.Width, (ushort)BufferInfos.Height);
-                            EncodedRectangle combinedEncoded = null;
                             // TODO: consider gathering all update rectangles in a batch and *then* posting the event back to the main thread.
                             for (int i = 0; i < rectangles; ++i)
                             {
                                 // Get the update rectangle's info
-                                Rectangle newRectangle;
-                                rfb.ReadFramebufferUpdateRectHeader(out newRectangle, out enc);
-                                if (combinedEncoded == null)
-                                    combinedEncoded = factory.Build(combinedRectangle, BufferInfos.BitsPerPixel, enc);
+                                Rectangle rectangle;
+                                rfb.ReadFramebufferUpdateRectHeader(out rectangle, out enc);
 
                                 // Build a derived EncodedRectangle type and pull-down all the pixel info
-                                EncodedRectangle er = factory.Build(newRectangle, BufferInfos.BitsPerPixel, enc);
+                                EncodedRectangle er = factory.Build(rectangle, BufferInfos.BitsPerPixel, enc);
                                 er.Decode();
 
                                 // Let the UI know that an updated rectangle is available, but check
                                 // to see if the user closed things down first.
-                                if (CheckIfThreadDone())
-                                    break;
-                                else if (i != 0)
-                                    combinedEncoded.CombineRectangle(er);
+                                if (!CheckIfThreadDone())
+                                {
+                                    updates.Add(er);
+                                   
+                                }
                             }
-                            updates.Add(combinedEncoded);
-                            Thread.Sleep(1);
                             break;
                         case RfbProtocol.BELL:
                             Beep(500, 300);  // TODO: are there better values than these?

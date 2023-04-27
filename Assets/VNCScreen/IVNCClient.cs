@@ -115,7 +115,7 @@ namespace VNCScreen
         /// <summary>
         /// Update the Desktop Image 
         /// </summary>
-        bool RequestUpdatedImage();
+        bool updateDesktopImage();
 
 
         Texture2D getTexture();

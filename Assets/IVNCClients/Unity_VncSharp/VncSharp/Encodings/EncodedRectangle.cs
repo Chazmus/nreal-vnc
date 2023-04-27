@@ -163,29 +163,5 @@ namespace UnityVncSharp.Encodings
 				ptr += offset;								    // advance to next row within pixels
 			}
 		}
-
-		public void CombineRectangle(EncodedRectangle otherRectangle)
-		{
-			int ptr = 0;
-			int offset = 0;
-			Rectangle rect = otherRectangle.rectangle;
-
-			// If the two rectangles don't match, then rect is contained within rectangle, and
-			// ptr and offset need to be adjusted to position things at the proper starting point.
-			if (rect != rectangle)
-			{
-				ptr = rect.Y * rectangle.Width + rect.X;    // move to the start of the rectangle in pixels
-				offset = rectangle.Width - rect.Width;      // calculate the offset to get to the start of the next row
-			}
-
-			for (int y = 0; y < rect.Height; ++y)
-			{
-				for (int x = 0; x < rect.Width; ++x)
-				{
-					framebuffer[ptr++] = otherRectangle.framebuffer[y * rect.Width + x];
-				}
-				ptr += offset;                                  // advance to next row within pixels
-			}
-		}
 	}
 }

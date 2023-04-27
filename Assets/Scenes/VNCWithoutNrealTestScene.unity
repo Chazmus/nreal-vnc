@@ -358,15 +358,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: host
-      value: pi
+      value: localhost
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: display
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: password
-      value: Ninjaturtle1
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6228263141720709354, guid: 287ae4caf003a182a86ded26d70a0ba6, type: 3}
       propertyPath: connectOnStartUp
