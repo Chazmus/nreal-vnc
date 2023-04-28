@@ -516,8 +516,8 @@ namespace VNCScreen
 
         public void OnKey(KeyCode key, bool pressed)
         {
-            uint code = KeyTranslator.convertToXKCode(key);
-            PressKey(code, pressed, !pressed);
+            // uint code = KeyTranslator.convertToXKCode(key);
+            // PressKey(code, pressed, !pressed);
         }
 
         public void PressKey(uint keysym, bool pressed)
