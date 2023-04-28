@@ -15,6 +15,8 @@ namespace DependencyInjection
             Container.BindInterfacesAndSelfTo<NrealcontrollerInput>().AsSingle();
             Container.BindFactory<VncScreenController.CreationParameters, VncScreenController, VncScreenController.Factory>()
                 .FromComponentInNewPrefab(FloatingScreenPrefab).AsTransient();
+
+            Container.BindInterfacesAndSelfTo<TestClick>().AsSingle();
         }
     }
 }

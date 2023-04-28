@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using VNCScreen;
 using Zenject;
 
@@ -11,12 +13,19 @@ namespace InputManagement
 
         public event KeyboardEventHandler OnKeyboardEvent;
 
-        public delegate void MouseClickedEventHandler(uint keysym, bool pressed);
+        public delegate void MouseClickedEventHandler(MouseButton button, bool pressed);
 
         public event MouseClickedEventHandler onMouseClicked;
         public delegate void MouseMoveEventHandler(uint keysym, bool pressed);
 
         public event MouseMoveEventHandler onMouseMoved;
+
+        public static Dictionary<int, MouseButton> mouseButtonMap = new Dictionary<int, MouseButton>()
+        {
+            {0, MouseButton.LeftMouse},
+            {1, MouseButton.RightMouse},
+            {2, MouseButton.MiddleMouse}
+        };
         public void Tick()
         {
             // check for all key presses
@@ -42,7 +51,7 @@ namespace InputManagement
                 if (Input.GetMouseButtonDown(i))
                 {
                     // perform action for mouse button press
-                    Debug.Log("Mouse button pressed: " + i);
+                    onMouseClicked(mouseButtonMap[i], true);
                 }
             }
 
