@@ -4,7 +4,7 @@ using Zenject;
 
 namespace InputManagement
 {
-    public class TestClick: IInitializable
+    public class TestClick
     {
         [Inject]
         public TestClick(KeyboardAndMouseInput keyboardAndMouseInput)
@@ -17,9 +17,5 @@ namespace InputManagement
             Debug.Log("Button:" + button + " was clicked");
         }
 
-        public void Initialize()
-        {
-            // Do nothing
-        }
     }
 }
