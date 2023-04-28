@@ -21,7 +21,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using System.Threading;
 using UnityEngine;
 using VNCScreen.Drawing;
@@ -64,11 +63,15 @@ namespace VNCScreen
         public Material connectedMaterial;
 
         private Size screenSize;
-        public Size ScreenSize { get { return screenSize; } }
+
+        public Size ScreenSize
+        {
+            get { return screenSize; }
+        }
 
         public bool connectOnStartUp;
-        bool passwordPending = false;            // After Connect() is called, a password might be required.
-        bool fullScreenRefresh = false;		     // Whether or not to request the entire remote screen be sent.
+        bool passwordPending = false; // After Connect() is called, a password might be required.
+        bool fullScreenRefresh = false; // Whether or not to request the entire remote screen be sent.
 
         private Material m;
 
@@ -94,7 +97,7 @@ namespace VNCScreen
             }
         }
 
-        IVncClient vnc;                           // The Client object handling all protocol-level interaction
+        IVncClient vnc; // The Client object handling all protocol-level interaction
 
         public enum RuntimeState
         {
@@ -123,14 +126,16 @@ namespace VNCScreen
                 case VNCPlugin.VNCSharp:
                     return new VNCSharpClient();
                 case VNCPlugin.RealVnc:
-                    {
-                        return gameObject.AddComponent<RealVncClient>();
-                    }
+                {
+                    return gameObject.AddComponent<RealVncClient>();
+                }
             }
         }
 
         public RuntimeState state = RuntimeState.Disconnected;
+
         public delegate void OnStateChanged(RuntimeState state);
+
         public event OnStateChanged onStateChanged_event;
 
         /// <summary>
@@ -138,10 +143,7 @@ namespace VNCScreen
         /// </summary>
         public bool IsConnected
         {
-            get
-            {
-                return state == RuntimeState.Connected || state == RuntimeState.WaitFirstBuffer;
-            }
+            get { return state == RuntimeState.Connected || state == RuntimeState.WaitFirstBuffer; }
         }
 
         public void Connect()
@@ -210,6 +212,7 @@ namespace VNCScreen
                 OnConnectionLost(this, new ErrorEventArg(errorConnection));
                 return;
             }
+
             this.connectionReceived = true;
             this.needPassword = needPassword;
         }
@@ -228,7 +231,7 @@ namespace VNCScreen
             if (password == null)
                 throw new NullReferenceException("password");
 
-            passwordPending = false;  // repeated calls to Authenticate should fail.
+            passwordPending = false; // repeated calls to Authenticate should fail.
             vnc.Authenticate(password, OnPassword);
         }
 
@@ -322,6 +325,7 @@ namespace VNCScreen
                 default:
                     break;
             }
+
             state = newState;
 
             if (onStateChanged_event != null)
@@ -407,7 +411,6 @@ namespace VNCScreen
                     // Make sure the next screen update is incremental
                     fullScreenRefresh = false;
                 }
-
             }
 
             for (int i = 0; i < stateChanges.Count; i++)
@@ -420,8 +423,12 @@ namespace VNCScreen
 
         void OnApplicationQuit()
         {
-            if (IsConnected)
-                Disconnect();
+            if (IsConnected) Disconnect();
+        }
+
+        private void OnDestroy()
+        {
+            if (IsConnected) Disconnect();
         }
 
         public void UpdateMouse(Vector2 pos, bool button0, bool button1, bool button2)
@@ -466,10 +473,10 @@ namespace VNCScreen
             switch (keys)
             {
                 case SpecialKeys.Ctrl:
-                    PressKeys(new uint[] { 0xffe3 }, true, release);  // CTRL, but don't release
+                    PressKeys(new uint[] { 0xffe3 }, true, release); // CTRL, but don't release
                     break;
                 case SpecialKeys.Alt:
-                    PressKeys(new uint[] { 0xffe9 }, true, release);  // ALT, but don't release
+                    PressKeys(new uint[] { 0xffe9 }, true, release); // ALT, but don't release
                     break;
                 case SpecialKeys.CtrlAltDel:
                     PressKeys(new uint[] { 0xffe3, 0xffe9, 0xffff }, true, release); // CTRL, ALT, DEL
