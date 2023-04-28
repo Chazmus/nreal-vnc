@@ -14,7 +14,9 @@ namespace InputManagement
 
         private void KeyboardAndMouseInputOnonMouseClicked(MouseButton button, bool pressed)
         {
-            Debug.Log("Button:" + button + " was clicked");
+            var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = new Vector3(0, 0, 2);
+
         }
 
     }
